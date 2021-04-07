@@ -1,0 +1,49 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../components/todo-item.html">
+
+<dom-module id="todo-list">
+    <template>
+        <style>
+            .list {
+                width: 205px;
+                margin: 20px 0 0 0;
+                padding: 0;
+                padding-left: 20px;
+            }
+            .list li {
+                margin-bottom: 15px;
+            }
+        </style>
+        <ol class="list">
+            <template is="dom-repeat" items={{data}}>
+                <li id$={{item.id}}>
+                    <todo-item 
+                    is-completed=[[item.completed]] 
+                    text=[[item.val]] id=[[item.id]]>
+                    </todo-item>
+                </li>
+            </template>
+        </ol>
+    </template>
+</dom-module>
+
+<script>
+class TodoList extends Polymer.Element {
+    static get is() {
+        return 'todo-list';
+    }
+
+    static get properties() {
+        return {
+            data: {
+                type: Array,
+                value: [],
+            }
+        }
+    }
+}
+
+window.customElements.define(TodoList.is, TodoList);
+</script>
+    

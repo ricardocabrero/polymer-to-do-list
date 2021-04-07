@@ -1,0 +1,104 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="todo-item">
+    <template>
+        <style>
+        :host {
+            display: flex;
+            justify-content: space-between;
+        }
+        p {
+            margin: 0;
+            padding-left: 15px;
+            word-break: break-word;
+            cursor: pointer;
+            position: relative;
+            line-height: 25px;
+            text-transform: capitalize;
+        }
+        p:after {
+            content: '+';
+            position: absolute;
+            left: 2px;
+            color: rgb(3, 95, 3);
+            font-size: 18px;
+        }
+        .completed {
+            text-decoration: line-through;
+        }
+        .completed:after {
+            content: '-';
+            top: -2px;
+            left: 3px;
+        }
+        button {
+            height: 25px;
+            background: #007bff;
+            border: 1px solid;
+            border-radius: 3px;
+            color: #fff;
+            padding: 3px 8px;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            outline: none;
+        }
+        </style>
+        <p on-click="handleToggle" class$={{class}}>[[text]]</p>
+        <button id$={{id}} on-click="handleDelete">Delete</button>
+    </template>
+</dom-module>
+
+<script>
+class TodoItem extends Polymer.Element {
+    static get is() {
+        return 'todo-item';
+    }
+
+    static get properties() {
+        return {
+            text: {
+                type: String,
+                value: "",
+            },
+            isCompleted: {
+                type: Boolean,
+                value: false,
+            },
+            id: {
+                type: Number,
+                value: null,
+            },
+            class: {
+                type: String,
+                value: "",
+                computed: '_addClass(isCompleted)'
+            }
+        }
+    }
+
+    handleDelete() {
+        this.dispatchEvent(new CustomEvent('item-delete', {
+            composed: true,
+            bubbles: true,
+            detail: this.id,
+        }));
+    }
+
+    handleToggle() {
+        this.dispatchEvent(new CustomEvent('item-toggle', {
+            composed: true,
+            bubbles: true,
+            detail: this.id,
+        }))
+    }
+
+    _addClass(isCompleted) {
+        if(isCompleted) {
+            return 'completed';
+        }
+    }
+}
+
+window.customElements.define(TodoItem.is, TodoItem);
+</script>
+    

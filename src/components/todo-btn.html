@@ -1,0 +1,75 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="todo-btn">
+    <template>
+        <style>
+            button {
+                padding: 2px 8px;
+                border-radius: 3px;
+                cursor: pointer;
+                height: 25px;
+                text-transform: capitalize;
+                border: 1px solid #666;
+                outline: none;
+            }
+            .selected {
+                background: crimson;
+                border-color: crimson;
+                color: #fff;
+            }
+        </style>
+        <button on-click='updateActive' class$={{class}}>[[text]]</button>
+    </template>
+</dom-module>
+
+<script>
+class TodoBtn extends Polymer.Element {
+    static get is() {
+        return 'todo-btn';
+    }
+
+    static get properties() {
+        return {
+            text: {
+                type: String,
+                value: '',
+            },
+            isSelected: {
+                type: Boolean,
+                value: false,
+                computed: '_isSelected(filter, text)'
+            },
+            class: {
+                type: String,
+                value: '',
+                computed: '_addClass(isSelected)',
+            },
+            filter: {
+                type: String,
+                value: '',
+            },
+        }
+    }
+
+    _addClass(selected) {
+        if(selected) {
+            return 'selected';
+        }
+    }
+
+    _isSelected(filter, text) {
+        return filter === text;
+    }
+
+    updateActive() {
+        this.dispatchEvent(new CustomEvent('active-btn', {
+            composed: true,
+            bubbles: true,
+            detail:this.text,
+        }));
+    }
+}
+
+window.customElements.define(TodoBtn.is, TodoBtn);
+</script>
+    

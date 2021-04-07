@@ -1,0 +1,54 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../components/todo-btn.html">
+
+<dom-module id="todo-filter">
+    <template>
+        <style>
+            .btns {
+                width: 225px;
+                display: flex;
+                justify-content: space-between;
+                padding: 0;
+                margin-top: 0;
+                list-style: none;
+            }
+        </style>
+
+        <ul class="btns">
+            <template is="dom-repeat" items={{btns}}>
+                <li>
+                    <todo-btn filter=[[filter]] selected=[[selected]] text=[[item]]></todo-btn>
+                </li>
+            </template>
+        </ul>
+    </template>
+</dom-module>
+
+<script>
+class TodoFilter extends Polymer.Element {
+    static get is() {
+        return 'todo-filter';
+    }
+
+    static get properties() {
+        return {
+            btns: {
+                type: Array,
+                value: ['completed', 'pending', 'all'],
+            },
+            selected: {
+                type: Boolean,
+                value: false,
+            },
+            filter: {
+                type: String,
+                value: '',
+            }
+        }
+    }
+}
+
+window.customElements.define(TodoFilter.is, TodoFilter);
+</script>
+    

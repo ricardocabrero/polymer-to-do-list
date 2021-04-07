@@ -1,0 +1,38 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+
+<dom-module id="todo-message">
+    <template>
+        <style>
+            p {
+                margin-bottom: 0;
+            }
+            strong {
+                text-transform: capitalize;
+            }
+        </style>
+        <template is="dom-if" if="{{isRepeat}}">
+            <p>This item (<strong>[[item]]</strong>) already exist</p>
+        </template>
+    </template>
+</dom-module>
+
+<script>
+class TodoMessage extends Polymer.Element {
+    static get is() {
+        return 'todo-message';
+    }
+
+    static get properties() {
+        return {
+            item: {
+                type: String,
+                value: '',
+            }
+        }
+    }
+}
+
+window.customElements.define(TodoMessage.is, TodoMessage);
+</script>
+    

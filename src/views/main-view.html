@@ -1,0 +1,118 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../components/todo-form.html">
+<link rel="import" href="../components/todo-message.html">
+<link rel="import" href="../components/todo-list.html">
+<link rel="import" href="../components/todo-filter.html">
+
+<dom-module id="main-view">
+    <template>
+        <style>
+            .main-view {
+                margin-top: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
+        <div class="main-view">
+            <todo-filter filter=[[filter]]></todo-filter>
+            <todo-form is-repeat=[[isRepeat]]></todo-form>
+            <todo-message item=[[item]] is-repeat=[[isRepeat]]></todo-message>
+            <todo-list data=[[filterData]]></todo-list>
+        </div>
+    </template>
+</dom-module>
+
+<script>
+class MainView extends Polymer.Element {
+    static get is() {
+        return 'main-view';
+    }
+
+    static get properties() {
+        return {
+            data: {
+                type: Array,
+                value: [],
+            },
+            item: {
+                type: String,
+                value: '',
+            },
+            filter: {
+                type: String,
+                value: 'all',
+            },
+            filterData: {
+                type: Array,
+                value: [],
+                computed: '_filterData(filter, data)',
+            },
+            isRepeat: {
+                type: Boolean,
+                value: false,
+            }
+        }
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener('input-value', this.addItem);
+        this.addEventListener('item-delete', this.deleteItem);
+        this.addEventListener('item-toggle', this.toggleItem);
+        this.addEventListener('active-btn', this.activeFilter);
+        this.addEventListener('hidde-message', this.hiddeMessage);
+
+        this.storage = new HandleStorage(this.data);
+        this.data = this.storage.getStorage() || [];
+    }
+
+    addItem({detail}) {
+        this.isRepeat = this.data.some(item => item.val === detail.val);
+        if(this.isRepeat) {
+            this.item = detail.val;
+            return;
+        }
+        this.data = [...this.data, detail];
+
+        this.storage.updateStorage(this.data);
+    }
+
+    deleteItem({detail}) {
+        this.data = this.data.filter(item => item.id !== detail);
+
+        this.storage.updateStorage(this.data);
+    }
+
+    toggleItem({detail}) {
+        this.data = this.data.map(item => (item.id === detail)
+        ? {...item, completed: !item.completed} : item);
+
+        this.storage.updateStorage(this.data);
+    }
+
+    activeFilter({detail}) {
+        this.filter = detail;
+    }
+
+    _filterData(filter, data) {
+        switch(filter) {
+            case 'completed':
+                return data = data.filter(item => item.completed === true);
+            case 'pending':
+                return data = data.filter(item => item.completed === false);
+            default:
+                return data;
+        }
+    }
+
+    hiddeMessage() {
+        this.isRepeat = false;
+    }
+}
+
+window.customElements.define(MainView.is, MainView);
+</script>
+    
